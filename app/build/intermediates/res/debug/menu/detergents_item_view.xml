@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/change_cart"
+        android:icon="@drawable/ic_action_change"
+        android:orderInCategory="100"
+        android:showAsAction="withText"
+        android:title="Change Quantity" />
+        <item
+        android:id="@+id/remove_cart"
+        android:icon="@drawable/ic_action_remove"
+        android:orderInCategory="200"
+        android:showAsAction="withText"
+        android:title="Remove from Cart" />
+
+</menu>
+<!-- From: file:/Users/Aadithya/Documents/Projects/Daily%20Price%20Android%20Studio/app/src/main/res/menu/detergents_item_view.xml -->

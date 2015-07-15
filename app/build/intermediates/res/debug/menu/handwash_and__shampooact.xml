@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/confirm"
+        android:icon="@drawable/ic_check"
+        android:orderInCategory="100"
+        android:showAsAction="always|withText"
+        android:title="Confirm Payment" />
+
+</menu>
+<!-- From: file:/Users/Aadithya/Documents/Projects/Daily%20Price%20Android%20Studio/app/src/main/res/menu/handwash_and__shampooact.xml -->
