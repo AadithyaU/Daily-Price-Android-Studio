@@ -148,7 +148,7 @@ public class DetergentsAdapter extends BaseAdapter {
 		     LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		     View view = li.inflate(R.layout.numberpickerdialog, (ViewGroup) temp.findViewById(R.id.numberPicker1));
 		     final NumberPicker np = (NumberPicker) view.findViewById(R.id.numberPicker1);
-	         np.setMaxValue(100); // max value 100
+	         np.setMaxValue(selectedProduct.getQuantity()); // max value 100
 	         alert.setView(view);
 	         np.setMinValue(0);   // min value 0
 	         np.setValue(DetergentsAdapter.getProductQuantity(selectedProduct));
@@ -198,7 +198,7 @@ public class DetergentsAdapter extends BaseAdapter {
     			 LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     			 View view = li.inflate(R.layout.numberpickerdialog, (ViewGroup) temp.findViewById(R.id.numberPicker1));
     			 final NumberPicker np = (NumberPicker) view.findViewById(R.id.numberPicker1);
-    		     np.setMaxValue(100); // max value 100
+    		     np.setMaxValue(selectedProduct.getQuantity()); // max value 100
     	         np.setMinValue(0); 
     	         alert.setView(view);
     	         np.setValue(DetergentsAdapter.getProductQuantity(selectedProduct));

@@ -22,7 +22,7 @@
         android:ems="10"
         android:textAllCaps="true"
         android:hint="Name"
-        android:inputType="textCapCharacters|textPersonName" />
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/editText2"

@@ -9,9 +9,17 @@
         android:id="@+id/listview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:visibility="visible"
         android:dividerHeight="2dp" >
 
     </ListView>
 
+    <TextView
+        android:id="@+id/Text"
+        android:text="No such product in this category"
+        android:layout_width="match_parent"
+        android:visibility="invisible"
+        android:textSize="20sp"
+        android:layout_height="match_parent" />;
     
-</RelativeLayout><!-- From: file:/Users/Aadithya/Documents/Projects/Daily%20Price%20Android%20Studio/app/src/main/res/layout/listview_main.xml -->
+</RelativeLayout><!-- From: file:/Users/Aadithya/Documents/Projects/DailyPrice/Daily%20Price%20Android%20Studio/app/src/main/res/layout/listview_main.xml -->

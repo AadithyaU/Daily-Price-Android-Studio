@@ -28,6 +28,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
+import android.widget.TextView;
 
 public class Fragment3 extends SherlockFragment {
 	
@@ -36,6 +37,7 @@ public class Fragment3 extends SherlockFragment {
 	ProgressDialog mProgressDialog;
 	SkincareAdapter adapter;
 	//EditText editsearch;
+	TextView t;
 	EditText inputsearch;
 	private static List<WorldPopulation> skincarelist = null;
 	public View rootView;
@@ -83,6 +85,7 @@ public class Fragment3 extends SherlockFragment {
 					map.setPrice((String) Product.get("Price"));
 					map.setProduct((String) Product.get("Product"));
 					map.setCategory((String) Product.get("Category"));
+						map.setQuantity(Integer.parseInt(Product.get("qty").toString()));
 					map.setPicture(image.getUrl());
 					skincarelist.add(map);
 					}
@@ -101,6 +104,7 @@ public class Fragment3 extends SherlockFragment {
 			listview = (ListView) rootView.findViewById(R.id.listview);
 			// Pass the results into SkincareAdapter.java
 
+			t = (TextView) rootView.findViewById(R.id.Text);
 				adapter = new SkincareAdapter(getActivity(),skincarelist);
 				listview.setAdapter(adapter);
 
@@ -130,21 +134,45 @@ public class Fragment3 extends SherlockFragment {
 
 	    searchView.setQueryHint("Search Product");
 	    searchView.setOnQueryTextListener(new OnQueryTextListener() {
+			@Override
+			public boolean onQueryTextSubmit(String searchtext) {
+				String text = searchtext.toString().toLowerCase(Locale.getDefault());
+				if (text.length() <= 0) {
+					t.setVisibility(View.INVISIBLE);
+					listview.setVisibility(View.VISIBLE);
+					adapter.filter(text);
+				} else {
+					adapter.filter(text);
+					if (adapter == null || adapter.isEmpty()) {
+						t.setVisibility(View.VISIBLE);
+						listview.setVisibility(View.INVISIBLE);
+					} else {
+						t.setVisibility(View.INVISIBLE);
+						listview.setVisibility(View.VISIBLE);
+					}
+				}
+				return true;
+			}
 
-	        @Override
-	        public boolean onQueryTextSubmit(String searchtext) {
-	            // what to do on submit, e.g. start an Activity and pass the query param
-	        	String text = searchtext.toString().toLowerCase(Locale.getDefault());
-				adapter.filter(text);
-	            return true;
-	        }
-
-	        @Override
-	        public boolean onQueryTextChange(String searchtext) {
-	        	String text = searchtext.toString().toLowerCase(Locale.getDefault());
-				adapter.filter(text);
-	            return false;
-	        }
+			@Override
+			public boolean onQueryTextChange(String searchtext) {
+				String text = searchtext.toString().toLowerCase(Locale.getDefault());
+				if (text.length() <= 0) {
+					t.setVisibility(View.INVISIBLE);
+					listview.setVisibility(View.VISIBLE);
+					adapter.filter(text);
+				} else {
+					adapter.filter(text);
+					if (adapter == null || adapter.isEmpty()) {
+						t.setVisibility(View.VISIBLE);
+						listview.setVisibility(View.INVISIBLE);
+					} else {
+						t.setVisibility(View.INVISIBLE);
+						listview.setVisibility(View.VISIBLE);
+					}
+				}
+				return false;
+			}
 
 	    });
 

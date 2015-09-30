@@ -7,6 +7,7 @@ public class WorldPopulation implements Parcelable{
 	 public String Product;
 	 public String Picture;
 	 public String Category;
+	public int qty;
 	public boolean selected;
 	public WorldPopulation()
     {
@@ -28,7 +29,8 @@ public class WorldPopulation implements Parcelable{
         // will come back in the same order
 		dest.writeString(this.getPrice());
         dest.writeString(this.getProduct());
-        dest.writeString(this.getPicture());  
+        dest.writeString(this.getPicture());
+		dest.writeInt(this.getQuantity());
         //dest.writeInt(this.intValue);
     }
 	public void readFromParcel(Parcel in)
@@ -40,6 +42,7 @@ public class WorldPopulation implements Parcelable{
         this.setPrice( in.readString());
         this.setProduct( in.readString());
         this.setPicture( in.readString());
+		this.setQuantity( Integer.parseInt(in.readString()));
     }
 	public static final Parcelable.Creator CREATOR = new Parcelable.Creator()
     {
@@ -83,5 +86,13 @@ public class WorldPopulation implements Parcelable{
 
 	public void setPicture(String Picture) {
 		this.Picture = Picture;
+	}
+
+	public void setQuantity(int qty) {
+		this.qty = qty;
+	}
+
+	public int getQuantity() {
+		return this.qty;
 	}
 }

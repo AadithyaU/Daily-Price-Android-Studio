@@ -23,6 +23,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
 public class Email extends Activity {
 	private List<WorldPopulation> CartList = ShoppingCartHelper.getCartList();
 	private ShoppingCartHelper quan;
@@ -44,11 +49,26 @@ public class Email extends Activity {
 		 
 	 CartList = ShoppingCartHelper.getCartList();
 	 for(int i=0; i<CartList.size(); i++) {
+		 final int j = i;
 			country = country+"\t\t"+CartList.get(i).getProduct();
 			country = country+"\t\t"+CartList.get(i).getPrice();
 			//country = country+"\t"+CartList.get(i).getRank();
 			country = country+"\t\t"+quan.getProductQuantity(CartList.get(i));
 			country=country+"\n";
+			 ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
+					 "Product");
+			 //query.orderByAscending("Product");
+			 query.whereEqualTo("Product", CartList.get(i).getProduct());
+		     query.getFirstInBackground(new GetCallback<ParseObject>() {
+				 @Override
+				 public void done(ParseObject parseObject, ParseException e) {
+					 if(parseObject != null) {
+						 int qty = Integer.parseInt(parseObject.get("qty").toString());
+						 parseObject.put("qty", qty - quan.getProductQuantity(CartList.get(j)));
+						 parseObject.saveInBackground();
+					 }
+				 }
+			 });
 		}		 
 	/* for(int i=0; i<CartList.size(); i++) {
 			population = population+"\t"+CartList.get(i).getPopulation();
@@ -251,123 +271,131 @@ public class Email extends Activity {
         	alert.setTitle("Cart Details")
         	.setView(myMsg)
         	.setCancelable(false)
-        	.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-						dialog.cancel();
-					}
-				})
-        	.setPositiveButton("Place Order", new DialogInterface.OnClickListener()  {
-				
+        	.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			})
+        	.setPositiveButton("Place Order", new DialogInterface.OnClickListener() {
+
 				@Override
-				
+
 				public void onClick(DialogInterface dialog, int which) {
 					final ProgressDialog dialog1 = ProgressDialog.show(Email.this, "", "Placing order...", true);
 					//dialog.dismiss();
-					String field1 = fd1.getText().toString();
-		            String field2 = fd2.getText().toString();
-		            String field3 = fd3.getText().toString();
-		            String field4 = fd4.getText().toString();
-		            String field5 = fd5.getText().toString();
-		            String field6 = fd6.getText().toString();
-		            //String field7 = lw.getTextFilter().toString();
-		            final GMailSender m = new GMailSender("bala94.n@gmail.com", "PrashantH"); 
-		       	 
-		  	      String[] toArr = {"bala94.n@gmail.com","anushya1995cool@gmail.com","aadi1194@gmail.com"}; 
-		  	      m.setTo(toArr); 
-		  	      m.setFrom("bala94.n@gmail.com"); 
-		  	      m.setSubject("User Information"); 
-		  	      m.setBody("Name: "+field1+"\nArea "+field2+"\nAddress: "+field3+"\nEmail id: "+field4+"\nMobile no: "+field5+"\nPhone no: "+field6+"\n\n\t"+"Product"+"\t"+"Price"+"\t"+"Qty"+"\n"+country); 
-		        	
-		  	    new AsyncTask<Void, Void, Void>()
-		  	    {
-		  	    	@Override
-		  	    	 protected Void doInBackground(Void... params)
-		  	        {
-		  	    		 try { 
-		  	    			 //m.addAttachment("/sdcard/filelocation"); 
-		  	 
-		  	    			 if(m.send()) { 
-		  	    				runOnUiThread(new Runnable() {
-		  	    					public void run() {
-		  	    						 //Toast.makeText(Email.this, "Your shopping is successful..!", Toast.LENGTH_LONG).show();
-		  	    						alert1.setTitle("Shopping Details")
-		  	    			        	.setView(myMsg1)
-		  	    			        	.setCancelable(false)
-		  	    	       	        	.setNegativeButton("Continue Shopping",new DialogInterface.OnClickListener() {
-		  	    	       	        			public void onClick(DialogInterface dialog,int id) {
-		  	    	       	        				dialog.cancel();
-		  	    	       	        				finish();
-		  	    	       	        				Intent i = new Intent(Email.this,MainActivity.class);
-		  	    	       	        				startActivity(i);
-		  	    	       	        			}
-		  	    	       	        			})
-		  	    	       	        		.setNeutralButton("Exit",new DialogInterface.OnClickListener() {
-		  	    	       	        		public void onClick(DialogInterface dialog,int id) {
-		  	    	       	        			dialog.dismiss();
-		  	    	       	        			Intent intent = new Intent(Intent.ACTION_MAIN);
-		  	    	       	        			intent.addCategory(Intent.CATEGORY_HOME);
-		  	    	       	        			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		  	    	       	        			startActivity(intent);
-		  	    	       	        		}
-		  	    	       	       			}).show(); 
-		  	    						finish();
-		  	    					}
-		  	    					});
-		  	    				 
-		  	    			 } else { 
-		  	    				runOnUiThread(new Runnable() {
-		  	    					public void run() {
-		  	    						 Toast.makeText(Email.this, "Shopping failed", Toast.LENGTH_LONG).show();
-		  	    					    }
-		  	    					});
-		  	    			 } 
-		  	    		 } catch(Exception e) { 
-		  	    			runOnUiThread(new Runnable() {
-	  	    					public void run() {
-	  	    						 Toast.makeText(Email.this, "Sorry, a problem occured", Toast.LENGTH_LONG).show(); 
-	  	    						alert1.setTitle("Shopping Details")
-	  	    			        	.setView(myMsg1)
-	  	    	       	        	.setCancelable(false)
-	  	    	       	        	.setNegativeButton("Conitnue Shopping",new DialogInterface.OnClickListener() {
-	  	    	       	        			public void onClick(DialogInterface dialog,int id) {
-	  	    	       	        				dialog.cancel();
-	  	    	       	        				finish();
-	  	    	       	        				Intent i = new Intent(Email.this,MainActivity.class);
-	  	    	       	        				startActivity(i);
-	  	    	       	        			}
-	  	    	       	        			})
-	  	    	       	        		.setNeutralButton("Exit",new DialogInterface.OnClickListener() {
-	  	    	       	        		public void onClick(DialogInterface dialog,int id) {
-	  	    	       	        			dialog.dismiss();
-	  	    	       	        			Intent intent = new Intent(Intent.ACTION_MAIN);
-	  	    	       	        			intent.addCategory(Intent.CATEGORY_HOME);
-	  	    	       	        			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	  	    	       	        			finish();
-	  	    	       	        			startActivity(intent);
-	  	    	       	        		}
-	  	    	       	       			}).show();
-	  	    					}
-	  	    					});
-	  	    				 Log.e("MailApp", "Could not send email", e); 
-		  	    		 } 
-		  	    		
-		  	    		 return null;
-		  	        }
-		  	    	@Override
-		  	        protected void onPostExecute(Void result)
-		  	        {
-		  	            dialog1.dismiss();
+					final String field1 = fd1.getText().toString();
+					final String field2 = fd2.getText().toString();
+					final String field3 = fd3.getText().toString();
+					final String field4 = fd4.getText().toString();
+					final String field5 = fd5.getText().toString();
+					final String field6 = fd6.getText().toString();
+					//String field7 = lw.getTextFilter().toString();
+					final GMailSender m = new GMailSender("anushya1995cool@gmail.com", "brownsid");
+
+					String[] toArr = {"anushya1995cool@gmail.com", "aadi1194@gmail.com"};
+					m.setTo(toArr);
+					m.setFrom("anushya1995cool@gmail.com");
+					m.setSubject("Daily Price User Information");
+					m.setBody("Name: " + field1 + "\nArea " + field2 + "\nAddress: " + field3 + "\nEmail id: " + field4 + "\nMobile no: " + field5 + "\nPhone no: " + field6 + "\n\n\t" + "Product" + "\t" + "Price" + "\t" + "Qty" + "\n" + country);
+
+					new AsyncTask<Void, Void, Void>() {
+						@Override
+						protected Void doInBackground(Void... params) {
+							try {
+								//m.addAttachment("/sdcard/filelocation");
+
+								if (m.send()) {
+									runOnUiThread(new Runnable() {
+										public void run() {
+											Toast.makeText(Email.this, "Your shopping is successful..!", Toast.LENGTH_LONG).show();
+											alert1.setTitle("Shopping Details")
+													.setView(myMsg1)
+													.setCancelable(false)
+													.setNegativeButton("Continue Shopping", new DialogInterface.OnClickListener() {
+														public void onClick(DialogInterface dialog, int id) {
+															dialog.cancel();
+															finish();
+															Intent i = new Intent(Email.this, MainActivity.class);
+															startActivity(i);
+														}
+													})
+													.setNeutralButton("Exit", new DialogInterface.OnClickListener() {
+														public void onClick(DialogInterface dialog, int id) {
+															dialog.dismiss();
+															Intent intent = new Intent(Intent.ACTION_MAIN);
+															intent.addCategory(Intent.CATEGORY_HOME);
+															intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+															startActivity(intent);
+														}
+													}).show();
+
+											final GMailSender ms = new GMailSender("anushya1995cool@gmail.com", "brownsid");
+
+											String[] toAddress = {field4};
+											ms.setTo(toAddress);
+											ms.setFrom("anushya1995cool@gmail.com");
+											ms.setSubject("Daily Price shopping successful");
+											ms.setBody("Your following order with Daily Price was successful :D\nName: " + field1 + "\nArea " + field2 + "\nAddress: " + field3 + "\nEmail id: " + field4 + "\nMobile no: " + field5 + "\nPhone no: " + field6 + "\n\n\t" + "Product" + "\t" + "Price" + "\t" + "Qty" + "\n" + country);
+											try {
+												ms.send();
+											} catch (Exception e) { }
+										}
+									});
+
+								} else {
+									runOnUiThread(new Runnable() {
+										public void run() {
+											Toast.makeText(Email.this, "Shopping failed", Toast.LENGTH_LONG).show();
+										}
+									});
+								}
+							} catch (Exception e) {
+								runOnUiThread(new Runnable() {
+									public void run() {
+										Toast.makeText(Email.this, "Sorry, a problem occured", Toast.LENGTH_LONG).show();
+										alert1.setTitle("Shopping Details")
+												.setView(myMsg1)
+												.setCancelable(false)
+												.setNegativeButton("Conitnue Shopping", new DialogInterface.OnClickListener() {
+													public void onClick(DialogInterface dialog, int id) {
+														dialog.cancel();
+														finish();
+														Intent i = new Intent(Email.this, MainActivity.class);
+														startActivity(i);
+													}
+												})
+												.setNeutralButton("Exit", new DialogInterface.OnClickListener() {
+													public void onClick(DialogInterface dialog, int id) {
+														dialog.dismiss();
+														Intent intent = new Intent(Intent.ACTION_MAIN);
+														intent.addCategory(Intent.CATEGORY_HOME);
+														intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+														finish();
+														startActivity(intent);
+													}
+												}).show();
+									}
+								});
+								Log.e("MailApp", "Could not send email", e);
+							}
+
+							return null;
+						}
+
+						@Override
+						protected void onPostExecute(Void result) {
+							dialog1.dismiss();
 		  	  	/*	  	Intent intent_name = new Intent();
 	  	            intent_name.setClass(getApplicationContext(),MainActivity.class);
 	  	            startActivity(intent_name);*/
-	  	       	
-		  	            for(int i=0; i<CartList.size(); i++) {
-			  	        	quan.removeProduct(CartList.get(i));  	
-			  	        }
-		  	        }
-		  	    }.execute();
-		  	    dialog.dismiss();
-					
+
+							for (int i = 0; i < CartList.size(); i++) {
+								quan.removeProduct(CartList.get(i));
+							}
+						}
+					}.execute();
+					dialog.dismiss();
+
 				}
 			}).show();
 		}
